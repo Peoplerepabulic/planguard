@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlanGuard — Benchmark</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="logo">🛡️ <span>PlanGuard</span></div>
+  <nav>
+    <a href="/">Live Verify</a>
+    <a href="/episodes.html">Episodes</a>
+    <a href="/benchmark.html" class="active">Benchmark</a>
+    <a href="/cost.html">Cost</a>
+  </nav>
+</header>
+<main>
+  <h1>Benchmark</h1>
+  <p class="sub">58 household tasks × 3 planners (Nemotron Nano / Super / Ultra)
+  × 5 guard configs. Ground truth: symbolic rollout + hand-checked labels.</p>
+  <div id="out"><div class="card"><span class="muted">Loading…</span></div></div>
+</main>
+<footer>PlanGuard · pre-execution safety runtime · Nebius x NVIDIA hackathon</footer>
+<script>
+const GUARD_LABEL = {none: 'planner only', l0: 'L0 symbolic', llm: 'LLM only (L1+L2)',
+  noesc: 'L0+L1 (no esc.)', full: 'full cascade'};
+async function load() {
+  const box = document.getElementById('out');
+  try {
+    const data = await (await fetch('/api/benchmark')).json();
+    const T = data.table;
+    const row = (pl, g) => T.find(r => r.planner === pl && r.guard === g);
+    const planners = ['nano', 'super', 'ultra'];
+    const guards = ['none', 'l0', 'llm', 'noesc', 'full'];
+    let h = `<div class="card"><h2>Unsafe action rate (lower is better)</h2><table>
+      <tr><th>planner \ guard</th>${guards.map(g => `<th>${GUARD_LABEL[g]}</th>`).join('')}</tr>`;
+    planners.forEach(pl => {
+      h += `<tr><td><b>${pl}</b></td>` + guards.map(g => {
+        const r = row(pl, g);
+        const v = (r.unsafe_rate * 100).toFixed(1) + '%';
+        const style = r.unsafe_rate === 0 ? 'color:var(--green);font-weight:700' : 'color:var(--red);font-weight:700';
+        return `<td style="${style}">${v}</td>`;
+      }).join('') + '</tr>';
+    });
+    h += `</table></div><div class="card"><h2>Finding recall (higher is better)</h2><table>
+      <tr><th>planner \ guard</th>${guards.map(g => `<th>${GUARD_LABEL[g]}</th>`).join('')}</tr>`;
+    planners.forEach(pl => {
+      h += `<tr><td><b>${pl}</b></td>` + guards.map(g => {
+        const r = row(pl, g);
+        return `<td>${r.finding_recall.toFixed(2)}</td>`;
+      }).join('') + '</tr>';
+    });
+    h += `</table></div><div class="card"><h2>Cost per plan & decision accuracy</h2><table>
+      <tr><th>planner</th><th>guard</th><th>avg cost</th><th>p50 latency</th><th>escalation</th><th>decision acc.</th><th>precision</th></tr>`;
+    T.forEach(r => {
+      if (r.guard === 'none') return;
+      h += `<tr><td>${r.planner}</td><td>${GUARD_LABEL[r.guard]}</td>
+        <td>$${r.avg_cost_usd.toFixed(4)}</td><td>${r.latency_p50_s}s</td>
+        <td>${(r.escalation_rate * 100).toFixed(0)}%</td>
+        <td>${r.decision_accuracy.toFixed(2)}</td><td>${r.finding_precision.toFixed(2)}</td></tr>`;
+    });
+    h += `</table></div>`;
+    // per-code detail for full cascade, super planner
+    const f = row('super', 'full');
+    h += `<div class="card"><h2>Per-code precision / recall — full cascade, super planner</h2><table>
+      <tr><th>code</th><th>precision</th><th>recall</th><th>tp</th><th>fp</th><th>fn</th></tr>`;
+    Object.entries(f.per_code).forEach(([c, d]) => {
+      h += `<tr><td><code>${c}</code></td><td>${d.p.toFixed(2)}</td><td>${d.r.toFixed(2)}</td><td>${d.tp}</td><td>${d.fp}</td><td>${d.fn}</td></tr>`;
+    });
+    h += `</table><p class="muted" style="margin-top:10px">${data.note}</p></div>`;
+    box.innerHTML = h;
+  } catch (e) {
+    box.innerHTML = '<div class="card">Benchmark data not ready yet.</div>';
+  }
+}
+load();
+</script>
+</body>
+</html>

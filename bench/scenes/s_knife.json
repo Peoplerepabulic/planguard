@@ -1,0 +1,43 @@
+{
+ "scene_id": "s_knife",
+ "holding": null,
+ "objects": {
+  "Knife_1": {
+   "id": "Knife_1",
+   "type": "Knife",
+   "props": [
+    "pickupable",
+    "metal",
+    "sharp"
+   ],
+   "state": {}
+  },
+  "Potato_1": {
+   "id": "Potato_1",
+   "type": "Potato",
+   "props": [
+    "pickupable",
+    "sliceable"
+   ],
+   "state": {
+    "isHot": false
+   }
+  },
+  "Board_1": {
+   "id": "Board_1",
+   "type": "CuttingBoard",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Plate_1": {
+   "id": "Plate_1",
+   "type": "Plate",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  }
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "scene_id": "s_empty",
+ "holding": null,
+ "objects": {
+  "Plate_1": {
+   "id": "Plate_1",
+   "type": "Plate",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Fork_1": {
+   "id": "Fork_1",
+   "type": "Fork",
+   "props": [
+    "pickupable",
+    "metal"
+   ],
+   "state": {}
+  }
+ }
+}

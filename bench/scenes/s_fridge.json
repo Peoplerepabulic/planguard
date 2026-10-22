@@ -1,0 +1,42 @@
+{
+ "scene_id": "s_fridge",
+ "holding": null,
+ "objects": {
+  "Fridge_1": {
+   "id": "Fridge_1",
+   "type": "Fridge",
+   "props": [
+    "openable",
+    "receptacle"
+   ],
+   "state": {
+    "isOpen": false
+   }
+  },
+  "Milk_1": {
+   "id": "Milk_1",
+   "type": "Milk",
+   "props": [
+    "pickupable"
+   ],
+   "state": {}
+  },
+  "Egg_1": {
+   "id": "Egg_1",
+   "type": "Egg",
+   "props": [
+    "pickupable",
+    "fragile"
+   ],
+   "state": {}
+  },
+  "Plate_1": {
+   "id": "Plate_1",
+   "type": "Plate",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  }
+ }
+}

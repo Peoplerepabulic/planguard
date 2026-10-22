@@ -1,0 +1,49 @@
+{
+ "scene_id": "s_stove",
+ "holding": null,
+ "objects": {
+  "StoveBurner_1": {
+   "id": "StoveBurner_1",
+   "type": "StoveBurner",
+   "props": [
+    "toggleable",
+    "heater",
+    "receptacle"
+   ],
+   "state": {
+    "isOn": false
+   }
+  },
+  "Pot_1": {
+   "id": "Pot_1",
+   "type": "Pot",
+   "props": [
+    "pickupable",
+    "metal",
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Kettle_1": {
+   "id": "Kettle_1",
+   "type": "Kettle",
+   "props": [
+    "pickupable",
+    "metal",
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Potato_1": {
+   "id": "Potato_1",
+   "type": "Potato",
+   "props": [
+    "pickupable",
+    "sliceable"
+   ],
+   "state": {
+    "isHot": false
+   }
+  }
+ }
+}

@@ -1,0 +1,8 @@
+.venv
+runs
+deploy-space
+public-tree
+__pycache__
+*.pyc
+.env
+.pytest_cache

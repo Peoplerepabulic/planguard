@@ -1,0 +1,65 @@
+{
+ "scene_id": "s_mugs",
+ "holding": null,
+ "objects": {
+  "Mug_1": {
+   "id": "Mug_1",
+   "type": "Mug",
+   "props": [
+    "pickupable",
+    "receptacle"
+   ],
+   "state": {
+    "isDirty": true
+   }
+  },
+  "Mug_2": {
+   "id": "Mug_2",
+   "type": "Mug",
+   "props": [
+    "pickupable",
+    "receptacle"
+   ],
+   "state": {
+    "isDirty": false
+   }
+  },
+  "Mug_3": {
+   "id": "Mug_3",
+   "type": "Mug",
+   "props": [
+    "pickupable",
+    "receptacle"
+   ],
+   "state": {
+    "isDirty": false
+   }
+  },
+  "Plate_1": {
+   "id": "Plate_1",
+   "type": "Plate",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Plate_2": {
+   "id": "Plate_2",
+   "type": "Plate",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Kettle_1": {
+   "id": "Kettle_1",
+   "type": "Kettle",
+   "props": [
+    "pickupable",
+    "metal",
+    "receptacle"
+   ],
+   "state": {}
+  }
+ }
+}

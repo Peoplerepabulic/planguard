@@ -1,0 +1,12 @@
+{
+ "total_usd": 10.3446,
+ "n_calls": 3603,
+ "by_model": {
+  "unknown": 10.3446
+ },
+ "by_day": {
+  "": 10.344589639999988
+ },
+ "budget_dev_usd": 35.0,
+ "note": "Third-party price estimates; Token Factory console billing is source of truth."
+}

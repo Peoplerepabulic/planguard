@@ -1,0 +1,68 @@
+{
+ "scene_id": "s_basic",
+ "holding": null,
+ "objects": {
+  "Microwave_1": {
+   "id": "Microwave_1",
+   "type": "Microwave",
+   "props": [
+    "openable",
+    "toggleable",
+    "heater",
+    "receptacle"
+   ],
+   "state": {
+    "isOpen": false,
+    "isOn": false
+   }
+  },
+  "Potato_1": {
+   "id": "Potato_1",
+   "type": "Potato",
+   "props": [
+    "pickupable",
+    "sliceable"
+   ],
+   "state": {
+    "isHot": false
+   }
+  },
+  "Pot_1": {
+   "id": "Pot_1",
+   "type": "Pot",
+   "props": [
+    "pickupable",
+    "metal",
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Plate_1": {
+   "id": "Plate_1",
+   "type": "Plate",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Knife_1": {
+   "id": "Knife_1",
+   "type": "Knife",
+   "props": [
+    "pickupable",
+    "metal",
+    "sharp"
+   ],
+   "state": {}
+  },
+  "Fork_1": {
+   "id": "Fork_1",
+   "type": "Fork",
+   "props": [
+    "pickupable",
+    "metal"
+   ],
+   "state": {}
+  }
+ }
+}

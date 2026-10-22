@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlanGuard — Cost</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="logo">🛡️ <span>PlanGuard</span></div>
+  <nav>
+    <a href="/">Live Verify</a>
+    <a href="/episodes.html">Episodes</a>
+    <a href="/benchmark.html">Benchmark</a>
+    <a href="/cost.html" class="active">Cost</a>
+  </nav>
+</header>
+<main>
+  <h1>Cost</h1>
+  <p class="sub">Development spend ledger. Prices are third-party estimates;
+  Token Factory console billing is the source of truth.</p>
+  <div id="out"><div class="card"><span class="muted">Loading…</span></div></div>
+</main>
+<footer>PlanGuard · pre-execution safety runtime · Nebius x NVIDIA hackathon</footer>
+<script>
+async function load() {
+  const box = document.getElementById('out');
+  try {
+    const c = await (await fetch('/api/cost')).json();
+    const pct = Math.min(100, c.total_usd / c.budget_dev_usd * 100);
+    let h = `<div class="grid2">
+      <div class="card"><div class="stat">$${c.total_usd.toFixed(2)}</div>
+        <div class="stat-label">total dev spend (${c.n_calls} LLM calls)</div></div>
+      <div class="card"><div class="stat">${pct.toFixed(1)}%</div>
+        <div class="stat-label">of $${c.budget_dev_usd} dev budget</div>
+        <div style="background:var(--border);border-radius:4px;height:8px;margin-top:10px">
+          <div style="background:var(--green);height:8px;border-radius:4px;width:${pct}%"></div>
+        </div></div>
+    </div>
+    <div class="card"><h2>Spend by model</h2><table>
+      <tr><th>model</th><th>spend</th><th>share</th></tr>`;
+    Object.entries(c.by_model).forEach(([m, v]) => {
+      h += `<tr><td><code>${m}</code></td><td>$${v.toFixed(2)}</td>
+        <td>${(v / c.total_usd * 100).toFixed(1)}%</td></tr>`;
+    });
+    h += `</table></div><div class="card"><h2>Spend by day</h2><table>
+      <tr><th>day</th><th>spend</th></tr>`;
+    Object.entries(c.by_day).forEach(([d, v]) => {
+      h += `<tr><td>${d}</td><td>$${v.toFixed(2)}</td></tr>`;
+    });
+    h += `</table><p class="muted" style="margin-top:10px">${c.note}</p></div>`;
+    box.innerHTML = h;
+  } catch (e) {
+    box.innerHTML = '<div class="card">Cost data not ready yet.</div>';
+  }
+}
+load();
+</script>
+</body>
+</html>

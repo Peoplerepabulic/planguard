@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: planguard
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: PLANGUARD_DAILY_CAP_USD
+        value: "2.0"
+      - key: NEBIUS_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false

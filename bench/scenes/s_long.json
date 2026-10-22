@@ -1,0 +1,88 @@
+{
+ "scene_id": "s_long",
+ "holding": null,
+ "objects": {
+  "Microwave_1": {
+   "id": "Microwave_1",
+   "type": "Microwave",
+   "props": [
+    "openable",
+    "toggleable",
+    "heater",
+    "receptacle"
+   ],
+   "state": {
+    "isOpen": false,
+    "isOn": false
+   }
+  },
+  "StoveBurner_1": {
+   "id": "StoveBurner_1",
+   "type": "StoveBurner",
+   "props": [
+    "toggleable",
+    "heater",
+    "receptacle"
+   ],
+   "state": {
+    "isOn": false
+   }
+  },
+  "Pot_1": {
+   "id": "Pot_1",
+   "type": "Pot",
+   "props": [
+    "pickupable",
+    "metal",
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Potato_1": {
+   "id": "Potato_1",
+   "type": "Potato",
+   "props": [
+    "pickupable",
+    "sliceable"
+   ],
+   "state": {
+    "isHot": false
+   }
+  },
+  "Plate_1": {
+   "id": "Plate_1",
+   "type": "Plate",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Knife_1": {
+   "id": "Knife_1",
+   "type": "Knife",
+   "props": [
+    "pickupable",
+    "metal",
+    "sharp"
+   ],
+   "state": {}
+  },
+  "Board_1": {
+   "id": "Board_1",
+   "type": "CuttingBoard",
+   "props": [
+    "receptacle"
+   ],
+   "state": {}
+  },
+  "Mug_1": {
+   "id": "Mug_1",
+   "type": "Mug",
+   "props": [
+    "pickupable",
+    "receptacle"
+   ],
+   "state": {}
+  }
+ }
+}

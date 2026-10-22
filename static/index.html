@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlanGuard — Live Verify</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="logo">🛡️ <span>PlanGuard</span></div>
+  <nav>
+    <a href="/" class="active">Live Verify</a>
+    <a href="/episodes.html">Episodes</a>
+    <a href="/benchmark.html">Benchmark</a>
+    <a href="/cost.html">Cost</a>
+  </nav>
+</header>
+<main>
+  <h1>Live Verify</h1>
+  <p class="sub">Submit a robot plan + scene. PlanGuard rolls it out symbolically,
+  then escalates through Nemotron Nano → Ultra only when needed.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <label>Plan (JSON)</label>
+      <textarea id="plan">{
+  "instruction": "Heat up the potato and serve it on a plate.",
+  "steps": [
+    {"idx": 1, "action": "pickup", "args": ["Potato_1"]},
+    {"idx": 2, "action": "put", "args": ["Potato_1", "Microwave_1"]},
+    {"idx": 3, "action": "toggle_on", "args": ["Microwave_1"]}
+  ]
+}</textarea>
+      <label>Goal predicates (JSON, optional)</label>
+      <input type="text" id="goal" value='[["isHot", "Potato_1", true], ["in", "Potato_1", "Plate_1"]]'>
+      <div style="margin-top:14px">
+        <button id="go" onclick="verify()">Verify plan</button>
+        <span class="muted" style="margin-left:10px;font-size:13px">10/day per IP · demo budget capped</span>
+      </div>
+    </div>
+    <div class="card">
+      <label>Scene (JSON) — preloaded: kitchen</label>
+      <textarea id="scene" style="min-height:280px"></textarea>
+    </div>
+  </div>
+
+  <div id="out"></div>
+</main>
+<footer>PlanGuard · pre-execution safety runtime · Nebius x NVIDIA hackathon</footer>
+<script>
+const SCENE = {
+  "objects": [
+    {"id":"Potato_1","type":"Potato","props":["pickupable","heatable"],"state":{"isHot":false}},
+    {"id":"Pot_1","type":"Pot","props":["pickupable","receptacle","metal"],"state":{}},
+    {"id":"Plate_1","type":"Plate","props":["pickupable","receptacle"],"state":{}},
+    {"id":"Microwave_1","type":"Microwave","props":["receptacle","heater","openable","toggleable"],"state":{"isOpen":false,"isOn":false}},
+    {"id":"Fridge_1","type":"Fridge","props":["receptacle","openable"],"state":{"isOpen":false}},
+    {"id":"Knife_1","type":"Knife","props":["pickupable","sharp"],"state":{}},
+    {"id":"CounterTop_1","type":"CounterTop","props":["receptacle"],"state":{}}
+  ],
+  "locations": {"Potato_1":"CounterTop_1","Pot_1":"CounterTop_1","Plate_1":"CounterTop_1","Knife_1":"CounterTop_1"},
+  "holding": null
+};
+document.getElementById('scene').value = JSON.stringify(SCENE, null, 1);
+
+async function verify() {
+  const out = document.getElementById('out');
+  const btn = document.getElementById('go');
+  btn.disabled = true;
+  out.innerHTML = '<div class="card"><span class="muted">Verifying… (LLM calls take 10–60s)</span></div>';
+  try {
+    const r = await fetch('/api/verify', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        plan: JSON.parse(document.getElementById('plan').value),
+        scene: JSON.parse(document.getElementById('scene').value),
+        goal: JSON.parse(document.getElementById('goal').value || 'null')
+      })
+    });
+    const v = await r.json();
+    if (!r.ok) { out.innerHTML = `<div class="card"><b>Error:</b> ${v.detail || v.error}</div>`; return; }
+    const fs = v.findings.map(f => `
+      <div class="finding ${f.severity}">
+        <span class="sev-${f.severity}">${f.severity.toUpperCase()}</span>
+        <code>${f.code}</code> <span class="muted">[${f.layer}${f.step ? ' · step ' + f.step : ''}]</span><br>
+        ${f.message}
+      </div>`).join('') || '<p class="muted">No findings.</p>';
+    out.innerHTML = `
+      <div class="card">
+        <h2>Verdict <span class="pill ${v.decision}">${v.decision.toUpperCase()}</span></h2>
+        <p class="muted">escalated to Ultra: ${v.escalated ? 'yes' : 'no'} ·
+        cost: $${v.cost_usd.toFixed(4)} ·
+        latency: ${Object.entries(v.latency_ms).map(([k,x]) => k + ' ' + (x/1000).toFixed(1) + 's').join(' · ')}</p>
+        <h2>Findings (${v.findings.length})</h2>${fs}
+        ${v.repaired ? `<h2>Repaired plan</h2><pre>${JSON.stringify(v.repaired, null, 1)}</pre>` : ''}
+      </div>`;
+  } catch (e) {
+    out.innerHTML = `<div class="card"><b>Error:</b> ${e.message}</div>`;
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

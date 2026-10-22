@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlanGuard — Episodes</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="logo">🛡️ <span>PlanGuard</span></div>
+  <nav>
+    <a href="/">Live Verify</a>
+    <a href="/episodes.html" class="active">Episodes</a>
+    <a href="/benchmark.html">Benchmark</a>
+    <a href="/cost.html">Cost</a>
+  </nav>
+</header>
+<main>
+  <h1>Episodes</h1>
+  <p class="sub">Recorded executions: flawed plan → guard verdict → repaired plan → sim execution.</p>
+  <div id="eps"><div class="card"><span class="muted">Loading…</span></div></div>
+</main>
+<footer>PlanGuard · pre-execution safety runtime · Nebius x NVIDIA hackathon</footer>
+<script>
+async function load() {
+  const box = document.getElementById('eps');
+  try {
+    const eps = await (await fetch('/api/episodes')).json();
+    box.innerHTML = eps.map(e => `
+      <div class="card">
+        <h2>${e.title}</h2>
+        <p class="muted">${e.scene} · verdict
+          <span class="pill ${e.decision}">${e.decision.toUpperCase()}</span>
+          ${e.escalated ? '· escalated to Ultra' : ''} · $${e.cost_usd.toFixed(4)}</p>
+        <h2>Guard findings (${e.findings.length})</h2>
+        ${e.findings.slice(0, 6).map(f => `
+          <div class="finding ${f.severity}">
+            <span class="sev-${f.severity}">${f.severity.toUpperCase()}</span>
+            <code>${f.code}</code> <span class="muted">[${f.layer}${f.step ? ' · step ' + f.step : ''}]</span><br>${f.message}
+          </div>`).join('')}
+        ${e.findings.length > 6 ? `<p class="muted">…and ${e.findings.length - 6} more</p>` : ''}
+        <h2>Repaired plan execution (${e.steps.filter(s => s.success).length}/${e.steps.length} steps OK)</h2>
+        <div class="step-nav" id="nav-${e.id}"></div>
+        <img class="frame" id="frame-${e.id}" src="${e.steps[0].frame}" alt="episode frame">
+        <p class="muted" id="cap-${e.id}" style="margin-top:8px"></p>
+      </div>`).join('');
+    eps.forEach(e => {
+      const nav = document.getElementById('nav-' + e.id);
+      const img = document.getElementById('frame-' + e.id);
+      const cap = document.getElementById('cap-' + e.id);
+      const show = i => {
+        const s = e.steps[i];
+        img.src = s.frame;
+        cap.textContent = `step ${s.idx}: ${s.action}(${s.args.join(', ')}) — ${s.success ? 'OK' : 'FAILED'}`;
+        [...nav.children].forEach((b, j) => b.classList.toggle('on', j === i));
+      };
+      e.steps.forEach((s, i) => {
+        const b = document.createElement('button');
+        b.textContent = s.idx;
+        b.onclick = () => show(i);
+        nav.appendChild(b);
+      });
+      show(0);
+    });
+  } catch (err) {
+    box.innerHTML = '<div class="card">Episodes not ready yet.</div>';
+  }
+}
+load();
+</script>
+</body>
+</html>
