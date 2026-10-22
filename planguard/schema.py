@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class Obj(BaseModel):
@@ -14,9 +14,17 @@ class Obj(BaseModel):
 
 
 class Scene(BaseModel):
-    scene_id: str
+    scene_id: str = "scene"
     objects: dict[str, Obj]
     holding: str | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _objects_list_to_dict(cls, data):
+        # Accept objects as a list of {id, ...} (web console format) too.
+        if isinstance(data, dict) and isinstance(data.get("objects"), list):
+            data = {**data, "objects": {o["id"]: o for o in data["objects"]}}
+        return data
 
 
 class Step(BaseModel):

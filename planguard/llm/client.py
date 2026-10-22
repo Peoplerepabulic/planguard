@@ -30,6 +30,8 @@ class TokenFactory:
         self.c = OpenAI(
             base_url=base_url or os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1/"),
             api_key=api_key or os.environ["NEBIUS_API_KEY"],
+            timeout=90.0,
+            max_retries=1,
         )
         env_models = {t: os.environ.get(f"MODEL_{t.upper()}") for t in TIERS}
         self.models = {

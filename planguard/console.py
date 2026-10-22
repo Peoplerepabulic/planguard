@@ -61,6 +61,11 @@ def verify(request: Request, body: dict):
             {"error": "daily_cap", "detail": "Demo daily budget exhausted."},
             status_code=429,
         )
+    except Exception as e:
+        return JSONResponse(
+            {"error": "verify_failed", "detail": str(e)[:300]},
+            status_code=422 if type(e).__name__ == "ValidationError" else 500,
+        )
     return v.model_dump(mode="json")
 
 
