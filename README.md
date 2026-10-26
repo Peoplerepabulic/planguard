@@ -12,6 +12,7 @@ All models run on **Nebius Token Factory** (Nemotron family).
 
 **🎬 Demo video:** https://youtu.be/8XeoHqb632E
 **🖥️ Live demo:** https://planguard-hzc0.onrender.com
+**📄 Technical report:** https://doi.org/10.5281/zenodo.23653256
 
 ## Results
 
