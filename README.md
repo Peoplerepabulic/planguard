@@ -10,6 +10,9 @@ half a cent per plan.
 Built for the **Nebius × NVIDIA Global AI Hackathon** (Physical AI track).
 All models run on **Nebius Token Factory** (Nemotron family).
 
+**🎬 Demo video:** https://youtu.be/8XeoHqb632E
+**🖥️ Live demo:** https://planguard-hzc0.onrender.com
+
 ## Results
 
 58-task benchmark × 3 planners × 5 guard configurations = 870 verdicts
